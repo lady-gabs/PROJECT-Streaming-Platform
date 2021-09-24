@@ -96,8 +96,8 @@ int cadastro_filme(FILME* filme, int* cont_filme);
 void cadastro_plano_basico(PLANO planobasico);
 void cadastro_plano_premium(PLANO planopremium);
 int cadastro_contrato(CONTRATO* contrato, int* cont_contrato, int cont_cliente, CLIENTE* cliente);
-void carregar_filme();
-void cancelar_contrato();
+int carregar_filme(FILME* filme, int cont_filme, CLIENTE* cliente, int cont_cliente);
+int cancelar_contrato(CONTRATO* contrato, int cont_contrato, CLIENTE* cliente, int cont_cliente);
 void gerar_fatura();
 void dados_cliente();
 void historico_cliente();
@@ -187,11 +187,11 @@ int main(){
                 break;
             }
             case 6:{
-                carregar_filme();
+                verificador=carregar_filme(filme, cont_filme, cliente, cont_cliente);
                 break;
             }
             case 7:{
-                cancelar_contrato();
+                verificador=cancelar_contrato(contrato, cont_contrato, cliente, cont_cliente);
                 break;
             }
             case 8:{
@@ -288,7 +288,7 @@ void cadastro_plano_premium(PLANO planopremium){
 }
 int cadastro_contrato(CONTRATO* contrato, int* cont_contrato, int cont_cliente, CLIENTE* cliente){
     char cpf[50];
-    int contador_cliente=0, contador_contrato=0;
+    int contador_cliente=0;
     int i;
 
     if (cont_cliente==0){
@@ -346,8 +346,8 @@ int cadastro_contrato(CONTRATO* contrato, int* cont_contrato, int cont_cliente, 
                                 return 1;
                             }
                             else{
-                                contrato[*cont_contrato].dia_cancelamento==0;
-                                contrato[*cont_contrato].mes_cancelamento==0;
+                                contrato[*cont_contrato].dia_cancelamento=0;
+                                contrato[*cont_contrato].mes_cancelamento=0;
                                 cont_contrato++;
                                 return 0;
                             }
@@ -357,10 +357,21 @@ int cadastro_contrato(CONTRATO* contrato, int* cont_contrato, int cont_cliente, 
         } 
     } 
 }
-void carregar_filme(){
+int carregar_filme(FILME* filme, int cont_filme, CLIENTE* cliente, int cont_cliente){
+    char cpf[50];
+    int i;
+    scanf(" %[^\n]%*c", cpf);
+    if(cont_cliente==0){
+        printf("ERRO: Nenhum cliente cadastrado no sistema\n");
+    }
+    for(i=0; i<cont_cliente; i++){
+        if(strcmp(cpf, cliente[i].cliente.cpf)==0){
+
+        }
+    }
 
 }
-void cancelar_contrato(){
+int cancelar_contrato(CONTRATO* contrato, int cont_contrato, CLIENTE* cliente, int cont_cliente){
 
 }
 void gerar_fatura(){
