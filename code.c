@@ -279,7 +279,7 @@ int cadastro_filme(FILME* filme, int* cont_filme, int* codigo_filme){
         return 1;
     }
     else{
-        filme[*cont_filme].filme.codigobusca=codigo_filme;
+        
         scanf(" %[^\n]%*c", filme[*cont_filme].filme.nome);
         do{
             scanf(" %d", &filme[*cont_filme].genero);
@@ -293,6 +293,7 @@ int cadastro_filme(FILME* filme, int* cont_filme, int* codigo_filme){
                         printf("ERRO: Classificao invalida\n");
                     }
                     else{
+                        filme[*cont_filme].filme.codigobusca=(*codigo_filme);
                         codigo_filme++;
                         (*cont_filme)++;
                         return 0;
