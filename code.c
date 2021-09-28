@@ -279,7 +279,6 @@ int cadastro_filme(FILME* filme, int* cont_filme, int* codigo_filme){
         return 1;
     }
     else{
-        
         scanf(" %[^\n]%*c", filme[*cont_filme].filme.nome);
         do{
             scanf(" %d", &filme[*cont_filme].genero);
@@ -570,7 +569,7 @@ int cancelar_contrato(CONTRATO* contrato, int cont_contrato, CLIENTE* cliente, i
                     printf("ERRO: Data de cancelamente anteiror a data de contratacao\n");
                 }
                 // VERIFICA VALOR DEVIDO (FUNÇÃO 8)
-                printf("Valor devido: %.2f\n", devido[i]);
+                //printf("Valor devido: %.2f\n", devido[i]);
                 contrato[i].dia_cancelamento=dia;
                 contrato[i].mes_cancelamento=mes;
                 cliente[i].status=inativo;
@@ -591,9 +590,6 @@ int gerar_fatura(CONTRATO* contrato, CLIENTE* cliente, int cont_contrato, int co
     char cpf[50];
     int contador_cliente=0,  contador_contrato=0;
 
-    if (cont_contrato==0){
-        printf("ERRO: Nenhum contrato cadastrado no sistema\n"); //RETURN
-    }
     do{
         scanf(" %d", &opcao);
         if (opcao<0 || opcao>1){
@@ -604,6 +600,12 @@ int gerar_fatura(CONTRATO* contrato, CLIENTE* cliente, int cont_contrato, int co
         }
     }while (opcao<0 || opcao>1);
     if (opcao==0){
+        if (cont_cliente==0){
+            printf("ERRO: Nenhum cliente cadastrado no sistema\n"); //RETURN
+        }
+        if (cont_contrato==0){
+            printf("ERRO: Nenhum contrato cadastrado no sistema\n"); //RETURN
+        }
         scanf(" %[^\n]%*c", cpf);
         for ( i=0; i<cont_cliente; i++){
             if (strcmp(cpf, cliente[i].cliente.cpf)==0){
