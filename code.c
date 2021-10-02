@@ -723,10 +723,12 @@ void gerar_fatura(CONTRATO* contrato, CLIENTE* cliente, int cont_contrato, int c
                         }
                     }
                 }
-                memset(&historico[i][cont_assistir[i]], 0, sizeof(HISTORICO));  //TA COM PROBLEMAAAA, NAO ZERA
                 printf("CPF: %s\n", cliente[i].cliente.cpf);
                 printf("Nome: %s\n", cliente[i].cliente.nome); //nome do cliente
                 printf("Valor devido: %.2f\n", devido[i]);
+                memset(&historico[i][cont_assistir[i]].codigo_filme, 0, sizeof(HISTORICO));  //TA COM PROBLEMAAAA, NAO ZERA
+                memset(&historico[i][cont_assistir[i]].dia, 0, sizeof(HISTORICO));
+                memset(&historico[i][cont_assistir[i]].mes, 0, sizeof(HISTORICO));
             } 
         } 
         printf("Mes vigente apos a fatura: %d\n", (*mes)+1);
@@ -782,9 +784,13 @@ void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int con
             else if (cliente[i].status==ativo){
                 printf("Estado: Ativo\n");
             }
-            for ( j = 0; j < cont_assistir[i]; j++){
-                assistiu_filme=1;
+            if (historico[i][cont_assistir[i]].codigo_filme==0){
+                printf("ERRO: Nenhum filme assistido\n");
+                return;
+            }
+            else if (historico[i][cont_assistir[i]].codigo_filme!=0){
                 for ( k=0; k<cont_filme; k++){
+                    
                     if (historico[i][j].codigo_filme==filme[k].filme.codigobusca){
                         printf("Codigo: %d\n",filme[k].filme.codigobusca); //codigo do filme
                         printf("Nome: %s\n",filme[k].filme.nome); //nome do filme
@@ -827,10 +833,6 @@ void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int con
                         printf("Data do carregamento: %d/%d\n\n", historico[i][j].dia, historico[i][j].mes);
                     }
                 }
-            }
-            if (assistiu_filme==0){
-                printf("ERRO: Nenhum filme assistido\n");
-                return;
             }
         }
         return;
