@@ -130,8 +130,14 @@ int main(){
     PLANO plano;
     CONTRATO contrato[const_contrato];
     int cont_cliente=0, cont_filme=0, cont_contrato=0;
-    int verificador, i;
+    int verificador, i, j;
     int total_assistido=0;
+    for ( i = 0; i < const_cliente; i++){
+        for ( j = 0; j < max_assistir; j++){
+            historico[i][j].codigo_filme=0;
+        }
+    }
+    
     for (i=0; i<6; i++){
         genero[i].max_cadastrado=0;
         genero[i].identificador_genero=0;
@@ -548,11 +554,11 @@ int carregar_filme(FILME* filme, int cont_filme, CLIENTE* cliente, int cont_clie
                         else if (filme[j].genero==5){   //romance
                             genero[5].quantidade_assistido[i]++;
                         }
-                        (*total_assistido)++;
-                        frequencia[i][j]++;
-                        historico[i][cont_assistir[i]].codigo_filme=codigo_filme;
+                        historico[i][cont_assistir[i]].codigo_filme=codigo_filme; //GUARDA O VALOR E NA FUNCAO DA FUNCAO NAO MOSTRA O CODIGO ARMAZENADO ;-;
                         historico[i][cont_assistir[i]].dia = dia;
                         historico[i][cont_assistir[i]].mes = mes;
+                        (*total_assistido)++;
+                        frequencia[i][j]++;
                         cont_assistir[i]++;
                         return 0;
                     }   
@@ -653,7 +659,7 @@ void cancelar_contrato(CONTRATO* contrato, int *cont_contrato, CLIENTE* cliente,
         return;
     }
 }
-
+//GERAR FATURA TA IMPRIMINDO VALOR DEVIDO ERRADO
 void gerar_fatura(CONTRATO* contrato, CLIENTE* cliente, int cont_contrato, int cont_cliente, int* mes, HISTORICO historico[][30], int* excedente, int* cont_assistir, FILME* filme, float* devido, int cont_filme){
     int i, j, k, opcao;
     char cpf[50];
@@ -683,18 +689,19 @@ void gerar_fatura(CONTRATO* contrato, CLIENTE* cliente, int cont_contrato, int c
                 contador_cliente=1; //cliente existe
                 if (cliente[i].status==ativo){
                     for ( j=0; j<cont_filme; j++){
-                        if (filme[i].filme.codigobusca==historico[j][cont_assistir[j]].codigo_filme){
+                        if (historico[i][cont_assistir[i]].codigo_filme==filme[j].filme.codigobusca){
                             printf("Nome: %s\n", filme[i].filme.nome); //nome do filme
-                            printf("Data: %d/%d\n", historico[j][cont_assistir[j]].dia, historico[j][cont_assistir[j]].mes); //data do carregamento
+                            printf("Data: %d/%d\n", historico[i][cont_assistir[i]].dia, historico[i][cont_assistir[i]].mes); //data do carregamento
                         }  
                     }
-                    for ( k = 0; k < cont_contrato; k++){
+                    for ( k = i; k < cont_contrato; k++){
                         if (contrato[k].plano.opcao_plano==0){   //basico
                             devido[i] = contrato[k].plano.plano.planobasico.valor_base+(excedente[i]*contrato[k].plano.plano.planobasico.valor_excedente);
                             printf("Valor devido: %.2f\n", devido[i]);
                             return;
                         }
                         if (contrato[k].plano.opcao_plano==1){
+                            devido[i]=contrato[k].plano.plano.planopremium.valor_base;
                             printf("Valor devido: %.2f\n", devido[i]);
                             return;
                         } 
@@ -713,7 +720,7 @@ void gerar_fatura(CONTRATO* contrato, CLIENTE* cliente, int cont_contrato, int c
     if (opcao==1){
         for (i=0; i<cont_cliente; i++){
             if (cliente[i].status==ativo){
-                for ( j = 0; j < cont_contrato; j++){
+                for ( j = i; j < cont_contrato; j++){
                     if (strcmp(contrato[j].cpf, cliente[i].cliente.cpf)==0){
                         if (contrato[j].plano.opcao_plano==plano_basico){
                             devido[i]=contrato[j].plano.plano.planobasico.valor_base+(excedente[i]*contrato[j].plano.plano.planobasico.valor_excedente);
@@ -727,8 +734,8 @@ void gerar_fatura(CONTRATO* contrato, CLIENTE* cliente, int cont_contrato, int c
                 printf("Nome: %s\n", cliente[i].cliente.nome); //nome do cliente
                 printf("Valor devido: %.2f\n", devido[i]);
                 memset(&historico[i][cont_assistir[i]].codigo_filme, 0, sizeof(HISTORICO));  //TA COM PROBLEMAAAA, NAO ZERA
-                memset(&historico[i][cont_assistir[i]].dia, 0, sizeof(HISTORICO));
-                memset(&historico[i][cont_assistir[i]].mes, 0, sizeof(HISTORICO));
+                //memset(&historico[i][cont_assistir[i]].dia, 0, sizeof(HISTORICO));
+                //memset(&historico[i][cont_assistir[i]].mes, 0, sizeof(HISTORICO));
             } 
         } 
         printf("Mes vigente apos a fatura: %d\n", (*mes)+1);
@@ -781,7 +788,8 @@ void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int con
             if(cliente[i].status==inativo){
                 printf("Estado: Inativo\n");
             }
-            else if (cliente[i].status==ativo){
+            if(cliente[i].status==ativo){
+                printf("HISTORICO %d\n", historico[i][cont_assistir[i]].codigo_filme); //TA APARECENDO 0 QUE NN EH PRA APARECER!!!(CASO 8)
                 printf("Estado: Ativo\n");
             }
             if (historico[i][cont_assistir[i]].codigo_filme==0){
@@ -789,8 +797,7 @@ void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int con
                 return;
             }
             else if (historico[i][cont_assistir[i]].codigo_filme!=0){
-                for ( k=0; k<cont_filme; k++){
-                    
+                for ( k=0; k<cont_filme; k++){ 
                     if (historico[i][cont_assistir[i]].codigo_filme==filme[k].filme.codigobusca){
                         printf("Codigo: %d\n",filme[k].filme.codigobusca); //codigo do filme
                         printf("Nome: %s\n",filme[k].filme.nome); //nome do filme
@@ -831,11 +838,11 @@ void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int con
                             printf("Classificacao: +18\n");
                         }
                         printf("Data do carregamento: %d/%d\n\n", historico[i][cont_assistir[i]].dia, historico[i][cont_assistir[i]].mes);
+                        return;
                     }
                 }
             }
         }
-        return;
     }
     if (contador_cliente==0){
         printf("ERRO: Cliente nao cadastrado\n");
@@ -904,7 +911,7 @@ void recomendar_filme(CLIENTE* cliente, int cont_cliente, FILME* filme, int cont
     int i, j, k, m, n;
     ASSISTIDO mais_assistido;
     char cpf[50];
-    int ativo=0, cliente_existe=0;
+    int ativo_var=0, cliente_existe=0;
 
     if(cont_cliente==0){
         printf("ERRO: Nenhum cliente cadastrado no sistema\n");
@@ -915,7 +922,7 @@ void recomendar_filme(CLIENTE* cliente, int cont_cliente, FILME* filme, int cont
         if (strcmp(cpf, cliente[i].cliente.cpf)==0){
             cliente_existe=1;
             if (cliente[i].status==ativo){
-                ativo=1;
+                ativo_var=1;
                 if (cont_assistir[i]==0){
                     printf("ERRO: Nenhum filme assistido\n");
                     return;
@@ -951,7 +958,7 @@ void recomendar_filme(CLIENTE* cliente, int cont_cliente, FILME* filme, int cont
         printf("ERRO: Cliente nao cadastrado\n");
         return;
     }
-    if (ativo==0){
+    if (ativo_var==0){
         printf("ERRO: Cliente nao ativo\n");
         return;
     } 
