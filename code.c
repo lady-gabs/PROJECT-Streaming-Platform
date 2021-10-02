@@ -766,9 +766,9 @@ void dados_cliente(CLIENTE* cliente, int cont_cliente){
 }
 
 void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int cont_filme, HISTORICO historico[][30], int* cont_assistir){
-    int i, j, k;
+    int i, k;
     char cpf[50];
-    int contador_cliente=0, assistiu_filme=0;
+    int contador_cliente=0;
 
     if (cont_cliente==0){
         printf("ERRO: Nenhum cliente cadastrado no sistema\n");
@@ -791,7 +791,7 @@ void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int con
             else if (historico[i][cont_assistir[i]].codigo_filme!=0){
                 for ( k=0; k<cont_filme; k++){
                     
-                    if (historico[i][j].codigo_filme==filme[k].filme.codigobusca){
+                    if (historico[i][cont_assistir[i]].codigo_filme==filme[k].filme.codigobusca){
                         printf("Codigo: %d\n",filme[k].filme.codigobusca); //codigo do filme
                         printf("Nome: %s\n",filme[k].filme.nome); //nome do filme
                         if (filme[k].genero==aventura){
@@ -830,7 +830,7 @@ void historico_cliente(CLIENTE* cliente, int cont_cliente, FILME* filme, int con
                         if (filme[k].classificacao==mais18){
                             printf("Classificacao: +18\n");
                         }
-                        printf("Data do carregamento: %d/%d\n\n", historico[i][j].dia, historico[i][j].mes);
+                        printf("Data do carregamento: %d/%d\n\n", historico[i][cont_assistir[i]].dia, historico[i][cont_assistir[i]].mes);
                     }
                 }
             }
