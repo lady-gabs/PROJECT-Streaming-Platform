@@ -1,1 +1,1 @@
-Foi osso demais esse projeto, senhor amado!!!
+Projeto final para a disciplina de Algoritmos e Técnica de Programação I
